@@ -1,5 +1,5 @@
 import classes from "./CartItem.module.css";
-import { OrderItem } from "../../models/OrderItem";
+import { OrderItem } from "../../models/Food";
 
 type Props = {
   id: string;

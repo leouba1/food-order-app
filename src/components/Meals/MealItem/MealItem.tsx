@@ -1,8 +1,8 @@
-import {useContext} from 'react'
-import CartContext from '../../../store/cart-context';
+import { useContext } from "react";
+import CartContext from "../../../store/cart-context";
 import classes from "./MealItem.module.css";
-import MealItemForm from './MealItemForm';
-import {OrderItem} from '../../../models/OrderItem'
+import MealItemForm from "./MealItemForm";
+import { OrderItem } from "../../../models/Food";
 
 type Props = {
   id: string;
@@ -16,15 +16,15 @@ const MealItem = ({ id, name, description, price }: Props) => {
   const priceFormatted = `$${price.toFixed(2)}`;
 
   const addToCartHandler = (amount: number) => {
-    const item:OrderItem = {
+    const item: OrderItem = {
       id: id,
       name: name,
       amount: amount,
       description: description,
-      price: price
-    }
-    cartContext.addItem(item)
-  }
+      price: price,
+    };
+    cartContext.addItem(item);
+  };
 
   return (
     <li className={classes.meal}>
@@ -33,7 +33,9 @@ const MealItem = ({ id, name, description, price }: Props) => {
         <div className={classes.description}>{description}</div>
         <div className={classes.price}>{priceFormatted}</div>
       </div>
-      <div><MealItemForm onAddToCart={addToCartHandler}/></div>
+      <div>
+        <MealItemForm onAddToCart={addToCartHandler} />
+      </div>
     </li>
   );
 };

@@ -1,12 +1,15 @@
 import React, { useReducer } from "react";
 import CartContext from "./cart-context";
-import { OrderItem } from "../models/OrderItem";
+import { OrderItem } from "../models/Food";
 
 type Props = {
   children: React.ReactNode;
 };
 
-type Action = { type: "ADD"; item: OrderItem } | { type: "REMOVE"; id: string };
+type Action =
+  | { type: "ADD"; item: OrderItem }
+  | { type: "REMOVE"; id: string }
+  | { type: "CLEAR" };
 type State = { items: OrderItem[]; totalAmount: number };
 
 const defaultCartState: State = {
@@ -63,6 +66,10 @@ const cartReducer = (state: State, action: Action) => {
       totalAmount: updatedTotalAmount,
     };
   }
+
+  if (action.type === "CLEAR") {
+    return defaultCartState;
+  }
   return defaultCartState;
 };
 
@@ -86,11 +93,18 @@ const CartProvider = ({ children }: Props) => {
     });
   };
 
+  const clearCartHandler = () => {
+    dispatchCartAction({
+      type: "CLEAR",
+    });
+  };
+
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    clearCart: clearCartHandler
   };
 
   return (
