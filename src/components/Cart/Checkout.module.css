@@ -1,64 +1,108 @@
 .form {
-    margin: 1rem 0;
-    height: 19rem;
-    overflow: scroll;
-  }
-  
-  .control {
-    margin-bottom: 0.5rem;
-  }
-  
-  .control label {
-    font-weight: bold;
-    margin-bottom: 0.25rem;
-    display: block;
-  }
-  
-  .control input {
-    font: inherit;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 20rem;
-    max-width: 100%;
-  }
-  
-  .actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-  }
-  
-  .actions button {
-    font: inherit;
-    color: #5a1a01;
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    border-radius: 25px;
-    padding: 0.5rem 2rem; 
-  }
-  
-  .actions button:hover,
-  .actions button:active {
-    background-color: #ffe6dc;
-  }
-  
-  .actions .submit {
-    border: 1px solid #5a1a01;
-    background-color: #5a1a01;
-    color: white;
-  }
-  
-  .actions .submit:hover,
-  .actions .submit:active {
-    background-color: #7a2706;
-  }
-  
-  .invalid label {
-    color: #ca3e51;
-  }
-  
-  .invalid input {
-    border-color: #aa0b20;
-    background-color: #ffeff1;
-  }
+  margin: 1rem 0;
+  height: 19rem;
+  overflow: scroll;
+}
+
+.control {
+  margin-bottom: 0.5rem;
+}
+
+.control label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.control input {
+  font: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 20rem;
+  max-width: 100%;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.actions button {
+  font: inherit;
+  color: #5a1a01;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 25px;
+  padding: 0.5rem 2rem;
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #ffe6dc;
+}
+
+.actions .submit {
+  border: 1px solid #5a1a01;
+  background-color: #5a1a01;
+  color: white;
+}
+
+.actions .submit:hover,
+.actions .submit:active {
+  background-color: #7a2706;
+}
+
+.invalid label {
+  color: #ca3e51;
+}
+
+.invalid input {
+  border-color: #aa0b20;
+  background-color: #ffeff1;
+}
+
+[data-tip] {
+  position: relative;
+}
+[data-tip]:before {
+  content: "";
+  /* hides the tooltip when not hovered */
+  display: none;
+  content: "";
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid red;
+  position: absolute;
+  top: 30px;
+  left: 35px;
+  z-index: 8;
+  font-size: 0;
+  line-height: 0;
+  width: 0;
+  height: 0;
+}
+[data-tip]:after {
+  display: none;
+  content: attr(data-tip);
+  position: absolute;
+  top: 35px;
+  left: 0px;
+  padding: 5px 8px;
+  background: red;
+  color: #fff;
+  z-index: 9;
+  font-size: 0.75em;
+  height: 18px;
+  line-height: 18px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+[data-tip]:hover:before,
+[data-tip]:hover:after {
+  display: block;
+}

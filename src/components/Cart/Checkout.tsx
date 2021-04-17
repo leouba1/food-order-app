@@ -1,109 +1,140 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent } from "react";
 import classes from "./Checkout.module.css";
 import { UserInfo } from "../../models/UserInfo";
+import useInput from "../../hooks/use-input";
 
 type Props = {
   onCancel: () => void;
   onConfirm: (data: UserInfo) => void;
 };
 
-const isEmpty = (value: string | undefined) => value?.trim() === "";
-const isFiveChars = (value: string | undefined) => value?.trim().length !== 5;
+const isNotEmpty = (value: string) => value.trim() !== "";
+const isFiveChars = (value: string) => value.trim().length === 5;
 
 const Checkout = ({ onCancel, onConfirm }: Props) => {
-  const [formInputsValidity, setformInputsValidity] = useState({
-    name: true,
-    street: true,
-    city: true,
-    postalCode: true,
-  });
+  const {
+    value: nameValue,
+    isValid: nameIsValid,
+    hasError: nameHasError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+  } = useInput(isNotEmpty);
 
-  const nameInputRef = useRef<HTMLInputElement>(null);
-  const streetInputRef = useRef<HTMLInputElement>(null);
-  const postalInputRef = useRef<HTMLInputElement>(null);
-  const cityInputRef = useRef<HTMLInputElement>(null);
+  const {
+    value: streetValue,
+    isValid: streetIsValid,
+    hasError: streetHasError,
+    valueChangeHandler: streetChangeHandler,
+    inputBlurHandler: streetBlurHandler,
+  } = useInput(isNotEmpty);
+
+  const {
+    value: postalCodeValue,
+    isValid: postalCodeIsValid,
+    hasError: postalHasError,
+    valueChangeHandler: postalCodeHandler,
+    inputBlurHandler: postalCodeBlurHandler,
+  } = useInput(isFiveChars);
+
+  const {
+    value: cityValue,
+    isValid: cityIsValid,
+    hasError: cityHasError,
+    valueChangeHandler: cityChangeHandler,
+    inputBlurHandler: cityBlurHandler,
+  } = useInput(isNotEmpty);
+
+  let formIsValid = false;
+
+  if (nameIsValid && streetIsValid && postalCodeIsValid && cityIsValid) {
+    formIsValid = true;
+  }
 
   const confirmHandler = (event: FormEvent) => {
     event.preventDefault();
 
-    const enteredName = nameInputRef.current?.value;
-    const enteredStreet = streetInputRef.current?.value;
-    const enteredPostal = postalInputRef.current?.value;
-    const enteredCity = cityInputRef.current?.value;
-
-    const enteredNameIsValid = !isEmpty(enteredName);
-    const enteredStreetIsValid = !isEmpty(enteredStreet);
-    const enteredPostalIsValid = isFiveChars(enteredPostal);
-    const enteredCityIsValid = !isEmpty(enteredCity);
-
-    setformInputsValidity({
-      name: enteredNameIsValid,
-      street: enteredStreetIsValid,
-      city: enteredCityIsValid,
-      postalCode: enteredCityIsValid,
-    });
-
-    const formIsValid =
-      enteredNameIsValid &&
-      enteredStreetIsValid &&
-      enteredPostalIsValid &&
-      enteredCityIsValid;
-
     if (!formIsValid) {
-      console.log(formInputsValidity);
       return;
     }
 
     onConfirm({
-      name: enteredName,
-      street: enteredCity,
-      postal: enteredPostal,
-      city: enteredCity,
+      name: nameValue,
+      street: streetValue,
+      postal: postalCodeValue,
+      city: cityValue,
     });
   };
 
   const nameControlClasses = `${classes.control} ${
-    formInputsValidity.name ? "" : classes.invalid
+    nameHasError ? classes.invalid : ""
   }`;
   const streetControlClasses = `${classes.control} ${
-    formInputsValidity.street ? "" : classes.invalid
+    streetHasError ? classes.invalid : ""
   }`;
   const cityControlClasses = `${classes.control} ${
-    formInputsValidity.city ? "" : classes.invalid
+    cityHasError ? classes.invalid : ""
   }`;
   const postalControlClasses = `${classes.control} ${
-    formInputsValidity.postalCode ? "" : classes.invalid
+    postalHasError ? classes.invalid : ""
   }`;
 
   return (
     <form onSubmit={confirmHandler}>
       <div className={nameControlClasses}>
         <label htmlFor="name">Your Name</label>
-        <input ref={nameInputRef} type="text" id="name" />
-        {!formInputsValidity.name && <p>Please enter a valid name</p>}
+        <div data-tip={nameHasError ? "Please enter a valid name" : null}>
+          <input
+            type="text"
+            id="name"
+            value={nameValue}
+            onChange={nameChangeHandler}
+            onBlur={nameBlurHandler}
+          />
+        </div>
       </div>
       <div className={streetControlClasses}>
         <label htmlFor="street">Street</label>
-        <input ref={streetInputRef} type="text" id="street" />
-        {!formInputsValidity.street && <p>Please enter a valid street</p>}
+        <div data-tip={streetHasError ? "Please enter a valid street" : null}>
+          <input
+            type="text"
+            id="street"
+            value={streetValue}
+            onChange={streetChangeHandler}
+            onBlur={streetBlurHandler}
+          />
+        </div>
       </div>
       <div className={postalControlClasses}>
         <label htmlFor="postal">Postal Code</label>
-        <input ref={postalInputRef} type="text" id="postal" />
-        {!formInputsValidity.postalCode && (
-          <p>Please enter a valid postal code</p>
-        )}
+        <div data-tip={postalHasError ? "Please enter a valid postal code" : null}>
+          <input
+            type="text"
+            id="postal"
+            value={postalCodeValue}
+            onChange={postalCodeHandler}
+            onBlur={postalCodeBlurHandler}
+          />
+        </div>
       </div>
       <div className={cityControlClasses}>
         <label htmlFor="city">City</label>
-        <input ref={cityInputRef} type="text" id="city" />
-        {!formInputsValidity.city && <p>Please enter a valid city</p>}
+        <div data-tip={cityHasError ? "Please enter a valid city" : null}>
+          <input
+            type="text"
+            id="city"
+            value={cityValue}
+            onChange={cityChangeHandler}
+            onBlur={cityBlurHandler}
+          />
+        </div>
       </div>
       <div className={classes.actions}>
         <button type="button" onClick={onCancel}>
           Cancel
         </button>
-        <button className={classes.submit}>Confirm</button>
+        <button disabled={!formIsValid} className={classes.submit}>
+          Confirm
+        </button>
       </div>
     </form>
   );
